@@ -22,7 +22,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import static android.content.ContentValues.TAG;
 
-public class LoginActivity extends AppCompatActivity {
+public class
+
+LoginActivity extends AppCompatActivity {
 
     EditText et_id, et_pw;
     Button btn_login, btn_jjoin;

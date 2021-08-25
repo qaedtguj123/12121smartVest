@@ -199,23 +199,25 @@ public class Worker_Main_Activity extends AppCompatActivity implements CirclePro
         db.collection("vest").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull  Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                while (true) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
 //                        Log.d("일산화탄소", document.getId() + " => " + document.getData().get("sensor2").toString());
-                        //       Log.d("메탄", document.getId() + " => " + document.getData());
-                        co = Integer.parseInt(document. getData().get("co").toString());
-                        ch4= Integer.parseInt(document. getData().get("ch4").toString());
-                        lpg= Integer.parseInt(document. getData().get("lpg").toString());
+                            //       Log.d("메탄", document.getId() + " => " + document.getData());
+                            co = Integer.parseInt(document.getData().get("co").toString());
+                            ch4 = Integer.parseInt(document.getData().get("ch4").toString());
+                            lpg = Integer.parseInt(document.getData().get("lpg").toString());
 //                        break;
+                        }
+
+                    } else {
+                        Log.w("테스트3", "Error getting documents.", task.getException());
                     }
+                    circleProgressBar.setProgress(co);  // 해당 퍼센트를 적용
+                    circleProgressBar2.setProgress(ch4);  // 해당 퍼센트를 적용
+                    circleProgressBar3.setProgress(lpg);  // 해당 퍼센트를 적용
 
-                } else {
-                    Log.w("테스트3", "Error getting documents.", task.getException());
                 }
-                circleProgressBar.setProgress(co);  // 해당 퍼센트를 적용
-                circleProgressBar2.setProgress(ch4);  // 해당 퍼센트를 적용
-                circleProgressBar3.setProgress(lpg);  // 해당 퍼센트를 적용
-
             }
         });
 
