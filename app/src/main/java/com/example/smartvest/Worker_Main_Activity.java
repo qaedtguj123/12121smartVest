@@ -206,7 +206,7 @@ public class Worker_Main_Activity extends AppCompatActivity implements CirclePro
                         co = Integer.parseInt(document. getData().get("co").toString());
                         ch4= Integer.parseInt(document. getData().get("ch4").toString());
                         lpg= Integer.parseInt(document. getData().get("lpg").toString());
-                        break;
+//                        break;
                     }
 
                 } else {
@@ -218,6 +218,11 @@ public class Worker_Main_Activity extends AppCompatActivity implements CirclePro
 
             }
         });
+
+        if(co>=200 || ch4>=200 || lpg >= 200){
+            Intent intent = new Intent(this, alramActivity.class);
+            startActivity(intent);
+        }
 
 
 

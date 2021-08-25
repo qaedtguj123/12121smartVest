@@ -4,6 +4,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -16,21 +18,34 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.smartvest.databinding.ActivityMapsBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
-    float latitude;
-    double longitude;
-    float altitude;
+    double a;
+    double b;
+    float c;
+    List<UserVO> data;
+    LatLng smart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -39,45 +54,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        Intent intent =getIntent();
-
-        latitude = intent.getExtras().getFloat("latitude");
-        longitude = intent.getExtras().getDouble("longitude");
-        altitude = intent.getExtras().getFloat("altitude");
-
-
-
-
-
-
-
-
-
     }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        data = new ArrayList<>();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng( latitude,longitude);
-        mMap.addMarker(new MarkerOptions().position(sydney).title(" 현재위치"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        CameraUpdate cUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng( latitude,longitude),altitude);
-        mMap.setMaxZoomPreference(15);
+        db.collection("user_gps")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                data.add(new UserVO((double) document.getData().get("경도"), (double) document.getData().get("고도"),
+                                        (double) document.getData().get("위도")));
+                                a = data.get(1).getLatitude();
+                                b = data.get(1).getLongitude();
+                                c = data.get(1).getAltitude();
+                                smart = new LatLng(a, b);
+                                Log.v("ㅅㅅ",String.valueOf(a));
+                                Log.v("ㅅㅅ",String.valueOf(b));
+                                Log.v("ㅅㅅ",String.valueOf(c));
 
+                            }
+                        } else {
+                            Log.w("테스트00", "Error getting documents.", task.getException());
+                        }
 
+                        Log.v("테스트", "if안");
+                        mMap.addMarker(new MarkerOptions().position(smart).title("사용자")
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(smart));
+                        mMap.setMaxZoomPreference(15);
 
-        mMap.moveCamera(cUpdate);
-    }
+                    }
+    });
 }
+    }

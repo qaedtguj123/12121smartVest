@@ -16,9 +16,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartVest"
-        android:usesCleartextTraffic="true"
-        >
-        <activity android:name=".CameraActivity"/>
+        android:usesCleartextTraffic="true">
+        <activity android:name=".alramActivity">
+
+
+        </activity>
+        <activity android:name=".sensorActivity" />
+        <activity android:name=".CameraActivity" />
         <activity android:name=".FirstActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

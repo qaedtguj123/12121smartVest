@@ -55,7 +55,6 @@ public class ManagerActivity extends FragmentActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
 
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
-        data = new ArrayList<>();
 
         setContentView(binding.getRoot());
 
@@ -72,6 +71,8 @@ public class ManagerActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("user_gps")
                 .get()
@@ -114,6 +115,7 @@ public class ManagerActivity extends FragmentActivity implements OnMapReadyCallb
                             CameraUpdate cUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(a, b), c);
                             //newlatlngzoom(latlng, 줌배율 아하 )
                             mMap.moveCamera(cUpdate);
+                            mMap.setMaxZoomPreference(20);
                         }
 
 
@@ -121,58 +123,9 @@ public class ManagerActivity extends FragmentActivity implements OnMapReadyCallb
                 });
 
 
-//            LatLng sydney = new LatLng( latitude,longitude);
-//            mMap.addMarker(new MarkerOptions().position(sydney).title(" 현재위치"));
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-//            CameraUpdate cUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng( latitude,longitude),altitude);
-//            mMap.setMaxZoomPreference(20);
 
 
-    }
 
-    //        // Add a marker in Sydney and move the camera
-//        for( double i = 0; i < 0.005; i+=0.0005){
-//            smart = new LatLng(latitude + i,longitude+i);
-//            if(latitude == latitude+i){
-//                mMap.addMarker(new MarkerOptions().position(smart).title("사용자" + i*2000)
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//            }else{
-//                mMap.addMarker(new MarkerOptions().position(smart).title("사용자" + i*2000)
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-//            }
-//        }
-//
-//
-//
-//
-//    }
-//
-//
-    LocationManager mLocationManager;
-
-    private Location getLastKnownLocation() {
-        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(ManagerActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        0);
-            } else {
-                Location l = mLocationManager.getLastKnownLocation(provider);
-                if (l == null) {
-                    continue;
-                }
-                if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                    // Found best last known location: %s", l);
-                    bestLocation = l;
-                }
-            }
-
-
-        }
-        return bestLocation;
     }
 
 
